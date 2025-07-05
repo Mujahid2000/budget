@@ -4,10 +4,12 @@ import Budget from "@/models/Budget"
 import mongoose from "mongoose"
 
 // DELETE /api/budgets/[id] - Delete a budget
-export async function DELETE(request: NextRequest, { params }: { params: { id: string } }) {
+export async function DELETE(request: NextRequest, paramsPromise: Promise<{ params: { id: string } }>) {
   try {
     await dbConnect()
 
+    // Resolve the params Promise to get the id
+    const { params } = await paramsPromise
     const { id } = params
 
     if (!mongoose.Types.ObjectId.isValid(id)) {
@@ -49,10 +51,12 @@ export async function DELETE(request: NextRequest, { params }: { params: { id: s
 }
 
 // PUT /api/budgets/[id] - Update a budget
-export async function PUT(request: NextRequest, { params }: { params: { id: string } }) {
+export async function PUT(request: NextRequest, paramsPromise: Promise<{ params: { id: string } }>) {
   try {
     await dbConnect()
 
+    // Resolve the params Promise to get the id
+    const { params } = await paramsPromise
     const { id } = params
     const body = await request.json()
     const { amount } = body
@@ -89,7 +93,7 @@ export async function PUT(request: NextRequest, { params }: { params: { id: stri
           success: false,
           error: "Budget not found",
         },
-        { status: 404 },
+        { status: 400 },
       )
     }
 
