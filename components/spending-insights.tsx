@@ -123,7 +123,7 @@ export function SpendingInsights() {
             <Alert variant="destructive">
               <AlertTriangle className="h-4 w-4" />
               <AlertDescription>
-                <strong>Budget Alert:</strong> You've overspent in {overBudgetCategories.length}
+                <strong>Budget Alert:</strong> You&apos;ve overspent in {overBudgetCategories.length}
                 {overBudgetCategories.length === 1 ? " category" : " categories"}:
                 <div className="mt-2 space-y-1">
                   {overBudgetCategories.map((insight) => (
@@ -206,7 +206,7 @@ export function SpendingInsights() {
             <Alert>
               <CheckCircle className="h-4 w-4" />
               <AlertDescription>
-                <strong>Great job!</strong> You're staying within budget across all categories.
+                <strong>Great job!</strong> You&apos;re staying within budget across all categories.
               </AlertDescription>
             </Alert>
           )}

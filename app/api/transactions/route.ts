@@ -1,7 +1,15 @@
 import { type NextRequest, NextResponse } from "next/server"
 import dbConnect from "@/lib/mongodb"
 import Transaction from "@/models/Transaction"
-
+// Define query interface
+interface TransactionQuery {
+  userId: string;
+  category?: string;
+  date?: {
+    $gte?: Date;
+    $lte?: Date;
+  };
+}
 // GET /api/transactions - Get all transactions
 export async function GET(request: NextRequest) {
   try {
@@ -16,7 +24,7 @@ export async function GET(request: NextRequest) {
     const page = Number.parseInt(searchParams.get("page") || "1")
 
     // Build query
-    const query: any = { userId }
+    const query: TransactionQuery = { userId } //Unexpected any. Specify a different type.
 
     if (category) {
       query.category = category
@@ -117,12 +125,12 @@ export async function POST(request: NextRequest) {
   } catch (error) {
     console.error("POST /api/transactions error:", error)
 
-    if (error.name === "ValidationError") {
+    if (error as unknown) {
       return NextResponse.json(
         {
           success: false,
           error: "Validation error",
-          details: error.errors,
+          details: error || "Invalid input data",
         },
         { status: 400 },
       )

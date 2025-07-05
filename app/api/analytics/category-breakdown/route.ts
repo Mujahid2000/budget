@@ -13,11 +13,11 @@ export async function GET(request: NextRequest) {
     const endDate = searchParams.get("endDate")
 
     // Build date filter
-    const dateFilter: any = {}
+    const dateFilter: any = {} //Error: Unexpected any. Specify a different type.
     if (startDate) dateFilter.$gte = new Date(startDate)
     if (endDate) dateFilter.$lte = new Date(endDate)
 
-    const matchStage: any = { userId }
+    const matchStage: any = { userId } //Error: Unexpected any. Specify a different type.
     if (Object.keys(dateFilter).length > 0) {
       matchStage.date = dateFilter
     }

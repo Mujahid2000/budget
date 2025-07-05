@@ -1,6 +1,13 @@
 import { type NextRequest, NextResponse } from "next/server"
 import dbConnect from "@/lib/mongodb"
 import Budget from "@/models/Budget"
+// Define query interface
+interface BudgetQuery {
+  userId: string;
+  month: number;
+  year: number;
+}
+
 
 // GET /api/budgets - Get all budgets
 export async function GET(request: NextRequest) {
@@ -12,13 +19,17 @@ export async function GET(request: NextRequest) {
     const month = searchParams.get("month")
     const year = searchParams.get("year")
 
-    // Build query
-    const query: any = { userId }
 
     // Default to current month/year if not specified
     const now = new Date()
     const currentMonth = month ? Number.parseInt(month) : now.getMonth() + 1
     const currentYear = year ? Number.parseInt(year) : now.getFullYear()
+    // Build query
+   const query: BudgetQuery = {
+      userId,
+      month: currentMonth,
+      year: currentYear,
+    } //Unexpected any. Specify a different type.
 
     query.month = currentMonth
     query.year = currentYear
@@ -115,12 +126,12 @@ export async function POST(request: NextRequest) {
   } catch (error) {
     console.error("POST /api/budgets error:", error)
 
-    if (error.name === "ValidationError") {
+    if (error as unknown) { //'error' is of type 'unknown'
       return NextResponse.json(
         {
           success: false,
           error: "Validation error",
-          details: error.errors,
+          details: error || "Invalid input data",
         },
         { status: 400 },
       )

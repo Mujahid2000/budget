@@ -3,6 +3,14 @@ import dbConnect from "@/lib/mongodb"
 import Transaction from "@/models/Transaction"
 import mongoose from "mongoose"
 
+
+// Define update data interface
+interface UpdateTransactionData {
+  amount?: number;
+  date?: Date;
+  description?: string;
+  category?: string;
+}
 // GET /api/transactions/[id] - Get a specific transaction
 export async function GET(request: NextRequest, { params }: { params: { id: string } }) {
   try {
@@ -89,7 +97,7 @@ export async function PUT(request: NextRequest, { params }: { params: { id: stri
       )
     }
 
-    const updateData: any = {}
+    const updateData: UpdateTransactionData = {} //Unexpected any. Specify a different type.
     if (amount !== undefined) updateData.amount = Number.parseFloat(amount)
     if (date) updateData.date = new Date(date)
     if (description !== undefined) updateData.description = description.trim()
@@ -115,12 +123,12 @@ export async function PUT(request: NextRequest, { params }: { params: { id: stri
   } catch (error) {
     console.error("PUT /api/transactions/[id] error:", error)
 
-    if (error.name === "ValidationError") {
+    if (error as unknown) {
       return NextResponse.json(
         {
           success: false,
           error: "Validation error",
-          details: error.errors,
+          details: error || "Invalid input data",
         },
         { status: 400 },
       )
