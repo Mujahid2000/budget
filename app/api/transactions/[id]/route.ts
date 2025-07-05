@@ -2,8 +2,6 @@ import { type NextRequest, NextResponse } from "next/server"
 import dbConnect from "@/lib/mongodb"
 import Transaction from "@/models/Transaction"
 import mongoose from "mongoose"
-
-
 // Define update data interface
 interface UpdateTransactionData {
   amount?: number;
@@ -12,11 +10,11 @@ interface UpdateTransactionData {
   category?: string;
 }
 // GET /api/transactions/[id] - Get a specific transaction
-export async function GET(request: NextRequest, { params }: { params: { id: string } }) {
+export async function GET(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   try {
     await dbConnect()
 
-    const { id } = params
+    const { id } = await params
 
     if (!mongoose.Types.ObjectId.isValid(id)) {
       return NextResponse.json(
@@ -57,11 +55,11 @@ export async function GET(request: NextRequest, { params }: { params: { id: stri
 }
 
 // PUT /api/transactions/[id] - Update a transaction
-export async function PUT(request: NextRequest, { params }: { params: { id: string } }) {
+export async function PUT(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   try {
     await dbConnect()
 
-    const { id } = params
+    const { id } = await params
     const body = await request.json()
     const { amount, date, description, category } = body
 
@@ -97,7 +95,7 @@ export async function PUT(request: NextRequest, { params }: { params: { id: stri
       )
     }
 
-    const updateData: UpdateTransactionData = {} //Unexpected any. Specify a different type.
+    const updateData: UpdateTransactionData = {}
     if (amount !== undefined) updateData.amount = Number.parseFloat(amount)
     if (date) updateData.date = new Date(date)
     if (description !== undefined) updateData.description = description.trim()
@@ -145,11 +143,11 @@ export async function PUT(request: NextRequest, { params }: { params: { id: stri
 }
 
 // DELETE /api/transactions/[id] - Delete a transaction
-export async function DELETE(request: NextRequest, { params }: { params: { id: string } }) {
+export async function DELETE(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   try {
     await dbConnect()
 
-    const { id } = params
+    const { id } = await params
 
     if (!mongoose.Types.ObjectId.isValid(id)) {
       return NextResponse.json(
