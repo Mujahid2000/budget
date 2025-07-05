@@ -2,6 +2,17 @@ import { type NextRequest, NextResponse } from "next/server"
 import dbConnect from "@/lib/mongodb"
 import Transaction from "@/models/Transaction"
 
+
+// Define interfaces for type safety
+interface DateFilter {
+  $gte?: Date;
+  $lte?: Date;
+}
+
+interface MatchStage {
+  userId: string;
+  date?: DateFilter;
+}
 // GET /api/analytics/category-breakdown - Get category-wise expense breakdown
 export async function GET(request: NextRequest) {
   try {
@@ -13,11 +24,11 @@ export async function GET(request: NextRequest) {
     const endDate = searchParams.get("endDate")
 
     // Build date filter
-    const dateFilter: any = {} //Error: Unexpected any. Specify a different type.
+    const dateFilter: DateFilter = {} //Error: Unexpected any. Specify a different type.
     if (startDate) dateFilter.$gte = new Date(startDate)
     if (endDate) dateFilter.$lte = new Date(endDate)
 
-    const matchStage: any = { userId } //Error: Unexpected any. Specify a different type.
+    const matchStage: MatchStage = { userId } //Error: Unexpected any. Specify a different type.
     if (Object.keys(dateFilter).length > 0) {
       matchStage.date = dateFilter
     }
