@@ -89,26 +89,37 @@ const ChartStyle = ({ id, config }: { id: string; config: ChartConfig }) => {
 
 const ChartTooltip = RechartsPrimitive.Tooltip
 
-// Fix: Proper typing for ChartTooltipContent
+// Proper typing for payload items
+interface TooltipPayloadItem {
+  value: string | number | null | undefined
+  name?: string
+  dataKey?: string
+  color?: string
+  payload?: Record<string, unknown>
+  fill?: string
+}
+
+// Fix: Proper typing for ChartTooltipContent with correct labelFormatter
 interface ChartTooltipContentProps {
   active?: boolean
-  payload?: Array<{
-    value: any
-    name?: string
-    dataKey?: string
-    color?: string
-    payload?: any
-  }>
-  label?: string
+  payload?: TooltipPayloadItem[]
+  label?: string | number
   hideLabel?: boolean
   hideIndicator?: boolean
   indicator?: "line" | "dot" | "dashed"
   nameKey?: string
   labelKey?: string
   className?: string
-  labelFormatter?: (value: any, payload: any[]) => React.ReactNode
+  // Fix: labelFormatter should accept the actual label value, not ReactNode
+  labelFormatter?: (value: string | number, payload: TooltipPayloadItem[]) => React.ReactNode
   labelClassName?: string
-  formatter?: (value: any, name: string, item: any, index: number, payload: any) => React.ReactNode
+  formatter?: (
+    value: string | number | null | undefined,
+    name: string | undefined,
+    item: TooltipPayloadItem,
+    index: number,
+    payload: Record<string, unknown> | undefined,
+  ) => [React.ReactNode, string] | React.ReactNode
   color?: string
 }
 
@@ -137,18 +148,25 @@ function ChartTooltipContent({
     const [item] = payload
     const key = `${labelKey || item?.dataKey || item?.name || "value"}`
     const itemConfig = getPayloadConfigFromPayload(config, item, key)
-    const value =
-      !labelKey && typeof label === "string" ? config[label as keyof typeof config]?.label || label : itemConfig?.label
+
+    // Fix: Ensure we have a proper string/number value for labelFormatter
+    let labelValue: string | number
+    if (!labelKey && (typeof label === "string" || typeof label === "number")) {
+      const configLabel = config[label as keyof typeof config]?.label
+      labelValue = typeof configLabel === "string" || typeof configLabel === "number" ? configLabel : label
+    } else if (typeof itemConfig?.label === "string" || typeof itemConfig?.label === "number") {
+      labelValue = itemConfig.label
+    } else if (typeof label === "string" || typeof label === "number") {
+      labelValue = label
+    } else {
+      labelValue = "Value"
+    }
 
     if (labelFormatter) {
-      return <div className={cn("font-medium", labelClassName)}>{labelFormatter(value, payload)}</div>
+      return <div className={cn("font-medium", labelClassName)}>{labelFormatter(labelValue, payload)}</div>
     }
 
-    if (!value) {
-      return null
-    }
-
-    return <div className={cn("font-medium", labelClassName)}>{value}</div>
+    return <div className={cn("font-medium", labelClassName)}>{labelValue}</div>
   }, [label, labelFormatter, payload, hideLabel, labelClassName, config, labelKey])
 
   if (!active || !payload?.length) {
@@ -169,8 +187,7 @@ function ChartTooltipContent({
         {payload.map((item, index) => {
           const key = `${nameKey || item.name || item.dataKey || "value"}`
           const itemConfig = getPayloadConfigFromPayload(config, item, key)
-          // Fix: Safe access to item.payload
-          const indicatorColor = color || item.payload?.fill || item.color
+          const indicatorColor = color || item.payload?.fill || item.color || item.fill
 
           return (
             <div
@@ -181,7 +198,18 @@ function ChartTooltipContent({
               )}
             >
               {formatter && item?.value !== undefined && item.name ? (
-                formatter(item.value, item.name, item, index, item.payload)
+                (() => {
+                  const result = formatter(item.value, item.name, item, index, item.payload)
+                  if (Array.isArray(result)) {
+                    return (
+                      <>
+                        <span className="text-muted-foreground">{result[1]}</span>
+                        <span className="text-foreground font-mono font-medium tabular-nums">{result[0]}</span>
+                      </>
+                    )
+                  }
+                  return result
+                })()
               ) : (
                 <>
                   {itemConfig?.icon ? (
@@ -195,12 +223,12 @@ function ChartTooltipContent({
                           "w-0 border-[1.5px] border-dashed bg-transparent": indicator === "dashed",
                           "my-0.5": nestLabel && indicator === "dashed",
                         })}
-                        style={
-                          {
-                            backgroundColor: indicatorColor,
-                            borderColor: indicatorColor,
-                          } as React.CSSProperties
-                        }
+                        style={{
+                          // Fix: Ensure proper color values or fallback to undefined
+                          backgroundColor:
+                            indicator !== "dashed" && indicatorColor ? String(indicatorColor) : undefined,
+                          borderColor: indicatorColor ? String(indicatorColor) : undefined,
+                        }}
                       />
                     )
                   )}
@@ -211,9 +239,9 @@ function ChartTooltipContent({
                       {nestLabel ? tooltipLabel : null}
                       <span className="text-muted-foreground">{itemConfig?.label || item.name}</span>
                     </div>
-                    {item.value && (
+                    {item.value !== null && item.value !== undefined && (
                       <span className="text-foreground font-mono font-medium tabular-nums">
-                        {typeof item.value === "number" ? item.value.toLocaleString() : item.value}
+                        {typeof item.value === "number" ? item.value.toLocaleString() : String(item.value)}
                       </span>
                     )}
                   </div>
@@ -229,17 +257,28 @@ function ChartTooltipContent({
 
 const ChartLegend = RechartsPrimitive.Legend
 
+// Proper typing for legend payload
+interface LegendPayloadItem {
+  value: string
+  type?: string
+  color?: string
+  dataKey?: string
+}
+
+interface ChartLegendContentProps extends React.ComponentProps<"div"> {
+  payload?: LegendPayloadItem[]
+  verticalAlign?: "top" | "middle" | "bottom"
+  hideIcon?: boolean
+  nameKey?: string
+}
+
 function ChartLegendContent({
   className,
   hideIcon = false,
   payload,
   verticalAlign = "bottom",
   nameKey,
-}: React.ComponentProps<"div"> &
-  Pick<RechartsPrimitive.LegendProps, "payload" | "verticalAlign"> & {
-    hideIcon?: boolean
-    nameKey?: string
-  }) {
+}: ChartLegendContentProps) {
   const { config } = useChart()
 
   if (!payload?.length) {
@@ -263,7 +302,8 @@ function ChartLegendContent({
               <div
                 className="h-2 w-2 shrink-0 rounded-[2px]"
                 style={{
-                  backgroundColor: item.color,
+                  // Fix: Ensure proper color value or fallback to undefined
+                  backgroundColor: item.color ? String(item.color) : undefined,
                 }}
               />
             )}
@@ -275,8 +315,12 @@ function ChartLegendContent({
   )
 }
 
-// Helper to extract item config from a payload.
-function getPayloadConfigFromPayload(config: ChartConfig, payload: unknown, key: string) {
+// Helper to extract item config from a payload with proper typing
+function getPayloadConfigFromPayload(
+  config: ChartConfig,
+  payload: unknown,
+  key: string,
+): { label?: React.ReactNode; icon?: React.ComponentType; color?: string } | undefined {
   if (typeof payload !== "object" || payload === null) {
     return undefined
   }
@@ -288,14 +332,14 @@ function getPayloadConfigFromPayload(config: ChartConfig, payload: unknown, key:
 
   let configLabelKey: string = key
 
-  if (key in payload && typeof payload[key as keyof typeof payload] === "string") {
-    configLabelKey = payload[key as keyof typeof payload] as string
+  if (key in payload && typeof (payload as Record<string, unknown>)[key] === "string") {
+    configLabelKey = (payload as Record<string, unknown>)[key] as string
   } else if (
     payloadPayload &&
     key in payloadPayload &&
-    typeof payloadPayload[key as keyof typeof payloadPayload] === "string"
+    typeof (payloadPayload as Record<string, unknown>)[key] === "string"
   ) {
-    configLabelKey = payloadPayload[key as keyof typeof payloadPayload] as string
+    configLabelKey = (payloadPayload as Record<string, unknown>)[key] as string
   }
 
   return configLabelKey in config ? config[configLabelKey] : config[key as keyof typeof config]
