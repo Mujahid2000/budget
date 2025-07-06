@@ -46,7 +46,7 @@ export function TransactionList({ transactions, onDelete, onEdit }: TransactionL
 
   return (
     <>
-      {/* Desktop Table View */}
+      {/* Desktop View */}
       <div className="hidden md:block">
         <Table>
           <TableHeader>
@@ -90,7 +90,7 @@ export function TransactionList({ transactions, onDelete, onEdit }: TransactionL
         </Table>
       </div>
 
-      {/* Mobile Card View */}
+      {/* Mobile View */}
       <div className="md:hidden space-y-4">
         {transactions.map((transaction) => (
           <Card key={transaction._id} className="hover:shadow-md transition-shadow">

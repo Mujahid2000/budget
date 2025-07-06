@@ -118,7 +118,7 @@ export function SpendingInsights() {
           <CardDescription>Analysis of your spending patterns and budget performance</CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
-          {/* Overspending Alerts */}
+          
           {overBudgetCategories.length > 0 && (
             <Alert variant="destructive">
               <AlertTriangle className="h-4 w-4" />
@@ -136,7 +136,7 @@ export function SpendingInsights() {
             </Alert>
           )}
 
-          {/* Top Spending Category */}
+         
           {topCategory && (
             <Alert>
               <TrendingUp className="h-4 w-4" />
@@ -147,7 +147,7 @@ export function SpendingInsights() {
             </Alert>
           )}
 
-          {/* Budget Performance Grid */}
+         
           <div className="grid gap-4 md:grid-cols-2">
             {insights.map((insight) => (
               <div key={insight.category} className="p-4 border rounded-lg space-y-2">
@@ -201,7 +201,7 @@ export function SpendingInsights() {
             ))}
           </div>
 
-          {/* Success Message */}
+          
           {overBudgetCategories.length === 0 && insights.length > 0 && (
             <Alert>
               <CheckCircle className="h-4 w-4" />
@@ -211,7 +211,7 @@ export function SpendingInsights() {
             </Alert>
           )}
 
-          {/* No Data Message */}
+         
           {insights.length === 0 && (
             <div className="text-center py-8 text-muted-foreground">
               Set up budgets to see spending insights and recommendations.

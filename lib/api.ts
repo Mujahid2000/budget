@@ -188,7 +188,7 @@ export const budgetApi = {
   },
 }
 
-// Analytics API functions
+// Analytics API 
 export const analyticsApi = {
   // Get dashboard data
   getDashboard: async (): Promise<ApiResponse<DashboardData>> => {
