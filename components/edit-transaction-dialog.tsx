@@ -111,7 +111,7 @@ export function EditTransactionDialog({ transaction, open, onOpenChange, onSave 
         <div className="space-y-4 py-4">
           <div className="grid gap-4 sm:grid-cols-2">
             <div className="space-y-2">
-              <Label htmlFor="edit-amount">Amount (₹)</Label>
+              <Label htmlFor="edit-amount">Amount ($)</Label>
               <Input
                 id="edit-amount"
                 type="number"

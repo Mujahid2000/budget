@@ -76,10 +76,10 @@ export function MonthlyExpensesChart() {
         <YAxis
           className="text-xs"
           tick={{ fontSize: 12 }}
-          tickFormatter={(value) => `₹${(value / 1000).toFixed(0)}k`}
+          tickFormatter={(value) => `$${(value / 1000).toFixed(0)}k`}
         />
         <ChartTooltip
-          content={<ChartTooltipContent formatter={(value) => [`₹${Number(value).toLocaleString()}`, "Expenses"]} />}
+          content={<ChartTooltipContent formatter={(value) => [`$${Number(value).toLocaleString()}`, "Expenses"]} />}
         />
         <Bar
           dataKey="totalExpenses"

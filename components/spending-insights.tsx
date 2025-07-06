@@ -128,7 +128,7 @@ export function SpendingInsights() {
                 <div className="mt-2 space-y-1">
                   {overBudgetCategories.map((insight) => (
                     <div key={insight.category} className="text-sm">
-                      <strong>{insight.category}:</strong> Overspent by ₹{Math.abs(insight.difference).toLocaleString()}
+                      <strong>{insight.category}:</strong> Overspent by ${Math.abs(insight.difference).toLocaleString()}
                     </div>
                   ))}
                 </div>
@@ -141,7 +141,7 @@ export function SpendingInsights() {
             <Alert>
               <TrendingUp className="h-4 w-4" />
               <AlertDescription>
-                <strong>Top Spending Category:</strong> {topCategory.category} with ₹
+                <strong>Top Spending Category:</strong> {topCategory.category} with $
                 {topCategory.amount.toLocaleString()} spent this month.
               </AlertDescription>
             </Alert>
@@ -169,12 +169,12 @@ export function SpendingInsights() {
                 <div className="space-y-1 text-sm">
                   <div className="flex justify-between">
                     <span>Budget:</span>
-                    <span>₹{insight.budget.toLocaleString()}</span>
+                    <span>${insight.budget.toLocaleString()}</span>
                   </div>
                   <div className="flex justify-between">
                     <span>Actual:</span>
                     <span className={insight.status === "over" ? "text-red-600 font-semibold" : ""}>
-                      ₹{insight.actual.toLocaleString()}
+                      ${insight.actual.toLocaleString()}
                     </span>
                   </div>
                   <div className="flex justify-between">

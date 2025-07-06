@@ -255,7 +255,7 @@ export default function PersonalFinanceVisualizer() {
                           className="flex justify-between items-center p-3 bg-slate-50 dark:bg-slate-800 rounded-lg"
                         >
                           <span className="font-medium">{category}</span>
-                          <span className="text-lg font-bold">₹{categoryTotal.toLocaleString()}</span>
+                          <span className="text-lg font-bold">${categoryTotal.toLocaleString()}</span>
                         </div>
                       )
                     })}

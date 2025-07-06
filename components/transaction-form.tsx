@@ -81,7 +81,7 @@ export function TransactionForm({ onSubmit }: TransactionFormProps) {
     <form onSubmit={handleSubmit} className="space-y-4">
       <div className="grid gap-4 sm:grid-cols-2">
         <div className="space-y-2">
-          <Label htmlFor="amount">Amount (₹)</Label>
+          <Label htmlFor="amount">Amount ($)</Label>
           <Input
             id="amount"
             type="number"

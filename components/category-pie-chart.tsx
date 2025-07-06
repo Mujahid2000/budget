@@ -112,7 +112,7 @@ export function CategoryPieChart() {
           ))}
         </Pie>
         <ChartTooltip
-          content={<ChartTooltipContent formatter={(value) => [`₹${Number(value).toLocaleString()}`, "Amount"]} />}
+          content={<ChartTooltipContent formatter={(value) => [`$${Number(value).toLocaleString()}`, "Amount"]} />}
         />
         <Legend />
       </PieChart>

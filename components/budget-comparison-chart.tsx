@@ -114,13 +114,13 @@ export function BudgetComparisonChart() {
         <YAxis
           className="text-xs"
           tick={{ fontSize: 12 }}
-          tickFormatter={(value) => `₹${(value / 1000).toFixed(0)}k`}
+          tickFormatter={(value) => `$${(value / 1000).toFixed(0)}k`}
         />
         <ChartTooltip
           content={
             <ChartTooltipContent
               formatter={(value, name) => [
-                `₹${Number(value).toLocaleString()}`,
+                `$${Number(value).toLocaleString()}`,
                 name === "budget" ? "Budget" : "Actual",
               ]}
             />

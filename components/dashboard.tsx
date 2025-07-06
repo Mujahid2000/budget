@@ -76,7 +76,7 @@ export function Dashboard() {
             <DollarSign className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">₹{totalExpenses.toLocaleString()}</div>
+            <div className="text-2xl font-bold">${totalExpenses.toLocaleString()}</div>
             <p className="text-xs text-muted-foreground">
               <TrendingUp className="inline h-3 w-3 mr-1" />
               This month
@@ -90,7 +90,7 @@ export function Dashboard() {
             <CreditCard className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">₹{totalBudget.toLocaleString()}</div>
+            <div className="text-2xl font-bold">${totalBudget.toLocaleString()}</div>
             <p className="text-xs text-muted-foreground">
               {totalExpenses > totalBudget ? (
                 <>
@@ -114,7 +114,7 @@ export function Dashboard() {
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">{topCategory?.category || "N/A"}</div>
-            <p className="text-xs text-muted-foreground">₹{topCategory?.amount.toLocaleString() || 0} spent</p>
+            <p className="text-xs text-muted-foreground">${topCategory?.amount.toLocaleString() || 0} spent</p>
           </CardContent>
         </Card>
 
@@ -146,7 +146,7 @@ export function Dashboard() {
                     <p className="text-xs text-muted-foreground">{new Date(transaction.date).toLocaleDateString()}</p>
                   </div>
                   <div className="text-right">
-                    <p className="font-bold">₹{transaction.amount.toLocaleString()}</p>
+                    <p className="font-bold">${transaction.amount.toLocaleString()}</p>
                     <Badge variant="secondary" className="text-xs">
                       {transaction.category}
                     </Badge>
@@ -176,7 +176,7 @@ export function Dashboard() {
                       <div className="flex justify-between text-sm">
                         <span className="font-medium">{categoryTotal.category}</span>
                         <span>
-                          ₹{categoryTotal.amount.toLocaleString()} ({percentage.toFixed(1)}%)
+                          ${categoryTotal.amount.toLocaleString()} ({percentage.toFixed(1)}%)
                         </span>
                       </div>
                       <div className="w-full bg-muted rounded-full h-2">

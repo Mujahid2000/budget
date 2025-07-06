@@ -83,7 +83,7 @@ export function BudgetForm({ onSubmit }: BudgetFormProps) {
       </div>
 
       <div className="space-y-2">
-        <Label htmlFor="budget-amount">Budget Amount (₹)</Label>
+        <Label htmlFor="budget-amount">Budget Amount ($)</Label>
         <Input
           id="budget-amount"
           type="number"

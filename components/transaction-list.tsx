@@ -68,7 +68,7 @@ export function TransactionList({ transactions, onDelete, onEdit }: TransactionL
                     {transaction.category}
                   </Badge>
                 </TableCell>
-                <TableCell className="text-right font-semibold">₹{transaction.amount.toLocaleString()}</TableCell>
+                <TableCell className="text-right font-semibold">${transaction.amount.toLocaleString()}</TableCell>
                 <TableCell className="text-right">
                   <div className="flex justify-end gap-2">
                     <Button variant="outline" size="sm" onClick={() => setEditingId(transaction._id)}>
@@ -101,7 +101,7 @@ export function TransactionList({ transactions, onDelete, onEdit }: TransactionL
                   <p className="text-xs text-muted-foreground">{new Date(transaction.date).toLocaleDateString()}</p>
                 </div>
                 <div className="text-right">
-                  <p className="font-bold text-lg">₹{transaction.amount.toLocaleString()}</p>
+                  <p className="font-bold text-lg">${transaction.amount.toLocaleString()}</p>
                 </div>
               </div>
               <div className="flex justify-between items-center">
