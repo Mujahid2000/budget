@@ -42,7 +42,7 @@ const TransactionSchema = new Schema<ITransaction>(
   },
 )
 
-// Index for better query performance
+// create Index 
 TransactionSchema.index({ userId: 1, date: -1 })
 TransactionSchema.index({ userId: 1, category: 1 })
 

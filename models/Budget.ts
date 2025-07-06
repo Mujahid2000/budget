@@ -24,7 +24,7 @@ const BudgetSchema = new Schema<IBudget>(
     },
     userId: {
       type: String,
-      default: "default-user", // For demo purposes
+      default: "default-user", 
     },
     month: {
       type: Number,
@@ -43,7 +43,7 @@ const BudgetSchema = new Schema<IBudget>(
   },
 )
 
-// Ensure one budget per category per month per user
+
 BudgetSchema.index({ userId: 1, category: 1, month: 1, year: 1 }, { unique: true })
 
 export default mongoose.models.Budget || mongoose.model<IBudget>("Budget", BudgetSchema)
